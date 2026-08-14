@@ -35,6 +35,23 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  #---------------------ESTAS SON DEPENDENCIAS PARA EL SPRINT 1 -----------------------
+  # State Management
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
+
+  # Dependency Injection
+  get_it: ^8.2.0
+
+  # Firebase
+  firebase_core: ^4.11.0
+  firebase_auth: ^6.5.5
+  cloud_firestore: ^6.7.0
+
+  # Google Sign-In
+  google_sign_in: ^7.2.0
+  #----------------------------------------------
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
