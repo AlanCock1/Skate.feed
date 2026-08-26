@@ -1,4 +1,5 @@
-import '../entities/user_entity.dart';
+import 'package:skate_feed/features/auth/domain/results/google_login_result.dart';
+
 import '../repositories/auth_repository.dart';
 
 class LoginWithGoogleUseCase {
@@ -6,7 +7,7 @@ class LoginWithGoogleUseCase {
 
   const LoginWithGoogleUseCase(this._repository);
 
-  Future<UserEntity> call() {
+  Future<GoogleLoginResult> call() {
     return _repository.loginWithGoogle();
   }
 }

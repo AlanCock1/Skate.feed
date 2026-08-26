@@ -1,4 +1,5 @@
 import '../entities/user_entity.dart';
+import '../../domain/results/google_login_result.dart';
 
 abstract class AuthRepository {
   Future<UserEntity> login({
@@ -18,7 +19,7 @@ abstract class AuthRepository {
 
   Future<UserEntity?> getCurrentUser();
 
-  Future<UserEntity> loginWithGoogle();
+  Future<GoogleLoginResult> loginWithGoogle();
 
   Future<void> forgotPassword({
     required String email,
