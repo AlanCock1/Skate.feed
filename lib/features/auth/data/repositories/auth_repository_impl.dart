@@ -2,7 +2,6 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/results/google_login_result.dart';
 import '../datasources/auth_remote_datasource.dart';
-import '../models/user_model.dart';
 
 class AuthRepositoryImpl extends AuthRepository{
   
@@ -71,4 +70,16 @@ class AuthRepositoryImpl extends AuthRepository{
       email: email
       ); 
   }
+
+
+  @override
+  Stream<UserEntity?> authStateChanges() {
+    return remoteDataSource.authStateChanges().map((userModel) {
+    
+      if(userModel == null){
+        return null;
+      }
+      return userModel; 
+  });
+}
 }

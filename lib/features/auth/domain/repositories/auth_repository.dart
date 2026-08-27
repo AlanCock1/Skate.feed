@@ -24,4 +24,6 @@ abstract class AuthRepository {
   Future<void> forgotPassword({
     required String email,
   });
+
+  Stream<UserEntity?> authStateChanges();
 }

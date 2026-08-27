@@ -233,4 +233,33 @@ class FirebaseAuthRemoteDataSource
   }) async {
     await firebaseAuth.sendPasswordResetEmail(email: email);
   }
+
+
+
+
+  @override
+  Stream<UserModel?> authStateChanges() {
+    //En esta siguiente línea recibiremos el Stream<User?> que convertiremos a Stream<UserModel?>  
+    return firebaseAuth.authStateChanges().asyncMap((firebaseUser) async { 
+
+      if (firebaseUser == null) {
+        return null;
+      }
+
+      final userDocument = await firestore
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .get();
+
+      if (!userDocument.exists) {
+        throw Exception('User profile not found');
+      }
+
+      final userData = userDocument.data();
+
+      return UserModel.fromMap(userData!);
+    });
+  }
+
+  
 }  

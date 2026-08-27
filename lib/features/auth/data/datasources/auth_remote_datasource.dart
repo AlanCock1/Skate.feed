@@ -27,4 +27,6 @@ abstract class AuthRemoteDataSource {
   Future<void> forgotPassword({
     required String email,
   });
+
+  Stream<UserModel?> authStateChanges(); //Este es para detectar cada cambio de estado del usuario
 }
