@@ -17,7 +17,7 @@
 //manejar errores específicos de Firebase,
 //foto de perfil,
 //Sightengine.
-
+ 
 import 'package:firebase_auth/firebase_auth.dart'; //Aquí está firebase ijijij
 import 'package:cloud_firestore/cloud_firestore.dart'; //aquí está firestore 
 import 'package:google_sign_in/google_sign_in.dart'; //Aquí está google_sign_in 
@@ -259,7 +259,5 @@ class FirebaseAuthRemoteDataSource
 
       return UserModel.fromMap(userData!);
     });
-  }
-
-  
+  } //----AUTENTICACIÓN DE 2 PASOS (OTP)
 }  

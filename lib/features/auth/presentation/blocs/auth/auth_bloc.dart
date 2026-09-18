@@ -1,3 +1,10 @@
+// ---FUNCIONAMIENTO---
+// Gestiona el estado global de autenticación de la aplicación.
+
+// Escucha los cambios de sesión mediante AuthStateChangesUseCase y
+// emite el estado correspondiente: no autenticado, autenticado,
+// perfil incompleto o usuario suspendido. También gestiona el Logout.
+
 /*
 En Fase 8 construimos el ferrocarril hasta AuthStateChangesUseCase. 
 
