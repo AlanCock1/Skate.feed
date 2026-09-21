@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart'; //Importamos flutter
 import 'package:firebase_core/firebase_core.dart'; //importamos firebase
 import 'firebase_options.dart'; //importamos el archivo que generó Flutterfirepara la configuración de Firebase
+
 import 'core/di/injection.dart'; //Importamos nuestro archivo de inyección de dependencias
+//import 'features/auth/presentation/pages/login_page.dart'; //Importamos la página de login 
+//import 'features/auth/presentation/pages/register_page.dart';
+//import 'features/auth/presentation/pages/forgot_password_page.dart';
+import 'features/auth/presentation/pages/complete_profile_page.dart';
 
 Future<void> main() async { //Utilizamos 'await' porque vamos a esperar que flutter, firebase y nuestras dependencias estén inicializadas antes de ejecutar la aplicación
 
@@ -25,11 +30,8 @@ class SkateFeedApp extends StatelessWidget { //Creamos la clase principal de nue
       theme: ThemeData( //Tema de la aplicación
         primarySwatch: Colors.blue, //Color primario de la aplicación
       ),
-      home: const Scaffold( //Pantalla principal de la aplicación
-        body: Center( //Centramos el contenido de la pantalla
-          child: Text('SkateFeed'), //Texto que se mostrará en la pantalla principal
-        ),
-      ),
+      home: const CompleteProfilePage(), //Pantalla principal de la aplicación
+      
     );
   }
 }

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-class PasswordField extends StatelessWidget {
-  const PasswordField({super.key});
+class DisplayNameField extends StatelessWidget {
+  const DisplayNameField({super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      obscureText: true,
       decoration: InputDecoration(
-        labelText: 'Contraseña',
-        hintText: 'Ingresa tu contraseña',
-        prefixIcon: Icon(Icons.lock_outline),
+        labelText: 'Nombre de usuario',
+        hintText: 'Ingresa el nombre que quieres que los demás vean',
+        prefixIcon: Icon(Icons.person_outline),
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
