@@ -1,3 +1,5 @@
+//La chamba de este es traducriir la petición de Domain hacia el Datasource pa. Sin meter lógica de Firebase directamente aquí
+
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/results/google_login_result.dart';

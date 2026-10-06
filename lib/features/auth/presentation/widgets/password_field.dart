@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 
 class PasswordField extends StatelessWidget {
-  const PasswordField({super.key});
+
+  final TextEditingController controller;
+
+  const PasswordField({
+    super.key,
+    required this.controller
+    });
+
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
+
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'Contraseña',

@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 
+
 class UsernameField extends StatelessWidget {
-  const UsernameField({super.key});
+  final TextEditingController controller;
+
+  const UsernameField({
+    super.key,
+    required this.controller
+    });
   
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
+      
       decoration: InputDecoration(
         labelText: 'Username',
         hintText: 'Ingresa tu nombre de usuario',

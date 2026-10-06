@@ -6,9 +6,17 @@
   import '../widgets/birth_date_field.dart';
 
 
-  class CompleteProfilePage extends StatelessWidget {
-    const CompleteProfilePage({super.key});
+class CompleteProfilePage extends StatefulWidget {
+  const CompleteProfilePage({super.key});
+   @override
+   State<CompleteProfilePage> createState() => _CompleteProfilePageState();
+}
 
+class _CompleteProfilePageState extends State<CompleteProfilePage> {
+    final usernameController = TextEditingController();
+    final displayNameController = TextEditingController();
+    DateTime? birthDate;
+    
     @override
     Widget build(BuildContext context) {
       return Scaffold(
@@ -56,21 +64,29 @@
                     ),
                   ),
               SizedBox(height: 15),
-              UsernameField(),
+              UsernameField(
+                controller: usernameController,
+              ),
 
               SizedBox(height: 15),
-              DisplayNameField(),
+              DisplayNameField(
+                controller: displayNameController,
+              ),
 
               SizedBox(height: 15),
-              BirthDateField(),
+              BirthDateField(onDateSelected: (date) {
+                setState(() {
+                  birthDate = date;
+                });
+              },),
 
           
           // ---- Login Button -------
             SizedBox(height: 30),
-            PrimaryAuthButton(
+            PrimaryAuthButton( //Chat... Aquí qué hago? Porque en los demás pages aplicamos el BlocBuilder pero en este caso no hay Bloc para complete_page.
                 text: 'Empezar',
                 onPressed: () {
-                  //Aquí irá loginBloc
+                  //Aquí irá completePageBloc
                 },
               ),
           // --------------------------------------------------
@@ -85,4 +101,11 @@
     )
   );
   }
+  @override
+    void dispose() {
+      usernameController.dispose();
+      displayNameController.dispose();
+      super.dispose();
+    }
+
   }

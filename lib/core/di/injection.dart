@@ -59,6 +59,12 @@ Future<void> configureDependencies() async {
     )
   );
 
+  sl.registerLazySingleton<LogoutUseCase>(
+  () => LogoutUseCase(
+    sl<AuthRepository>(),
+  ),
+);
+
   sl.registerLazySingleton<ForgotPasswordUseCase>(
     () => ForgotPasswordUseCase(
       sl<AuthRepository>(),
@@ -82,6 +88,8 @@ Future<void> configureDependencies() async {
       sl<AuthRepository>(),
     )
   );
+
+  
 
   //------BLoCs----------------
 

@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 
 class DisplayNameField extends StatelessWidget {
-  const DisplayNameField({super.key});
+  
+  final TextEditingController controller;
+
+  const DisplayNameField({
+    super.key,
+    required this.controller
+    });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
+
       decoration: InputDecoration(
         labelText: 'Nombre de usuario',
         hintText: 'Ingresa el nombre que quieres que los demás vean',

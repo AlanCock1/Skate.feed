@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BirthDateField extends StatelessWidget {
-  const BirthDateField({super.key});
+  final ValueChanged<DateTime> onDateSelected;
+
+  const BirthDateField({
+    super.key,
+    required this.onDateSelected,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +31,10 @@ class BirthDateField extends StatelessWidget {
         firstDate: DateTime(1900),
         lastDate: DateTime.now(),
         );
+        
+        if (pickedDate != null) {
+          onDateSelected(pickedDate);
+        }
       },
     );
   }

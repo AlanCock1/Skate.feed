@@ -3,8 +3,18 @@ import 'package:flutter/material.dart';
 import '../widgets/email_field.dart';
 import '../widgets/primary_auth_button.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+class ForgotPasswordPage extends StatefulWidget {
+
   const ForgotPasswordPage({super.key});
+
+  @override
+  State<ForgotPasswordPage> createState() => _ForgotPasswordState(); 
+}
+
+class _ForgotPasswordState extends State<ForgotPasswordPage> {
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +59,9 @@ class ForgotPasswordPage extends StatelessWidget {
                 ),
 
                 SizedBox(height: 30),
-                EmailField(),
+                EmailField(
+                  controller: emailController,
+                ),
 
                 SizedBox(height: 15),
                 PrimaryAuthButton(
