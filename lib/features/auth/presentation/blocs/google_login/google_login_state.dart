@@ -20,9 +20,7 @@ class GoogleLoginSuccess extends GoogleLoginState {
   final GoogleLoginResult result;
 
   const GoogleLoginSuccess(this.result);
-  //Ahora... aquí en el BLoC nada más me encargo de saber cómo resultó el login con Google, no de saber si el perfil de google está completo o no. Entonces no sé si hacer el objeto tipo GoogleResult es correcto,
-  //porque en ese caso tendría que devolver un perfilIncomplete o perfilCompleted.... cosa que en mi BLoC no debería conocer... interesante 
-
+  
   @override
   List<Object?> get props => [result];
 }

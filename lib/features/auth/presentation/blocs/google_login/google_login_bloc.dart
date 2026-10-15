@@ -15,12 +15,16 @@ class GoogleLoginBloc extends Bloc<GoogleLoginEvent, GoogleLoginState> {
       : super(const GoogleLoginInitial()) {
 
     on<GoogleLoginPressed>((event, emit) async {
+      print('🔥 GoogleLoginPressed recibido');
       emit(const GoogleLoginLoading());
+
       try {
         final result = await loginWithGoogleUseCase();
+        print('🔥 Google Login terminó correctamente');
         emit(GoogleLoginSuccess(result));
         
       } catch (error) {
+        print('🔥 ERROR Google Login: $error');
         emit(GoogleLoginFailure(error.toString()));
       }
     });

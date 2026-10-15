@@ -25,5 +25,13 @@ abstract class AuthRepository {
     required String email,
   });
 
+  Future<UserEntity> completeProfile({
+    required String username,
+    required String displayName,
+    required DateTime birthDate,
+  });
+
   Stream<UserEntity?> authStateChanges();
+
+
 }

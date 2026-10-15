@@ -12,7 +12,7 @@ class UserModel extends UserEntity {  //Heredamos de UserEntity
     required super.id,  //El super es para utilizar el constructor de la clase padre (UserEntity) 
     required super.email, 
     super.username,
-    required super.displayName,
+    required super.displayName,  //!!!!!!!!! OBSERVACIÓN DE POSIBLE ERROR !!!!!!!!!!!!!!!! El displayName lo espera ahuevo, entonces puede que de algún error cuando 
     super.birthDate,
     super.photoUrl,
     required super.role,

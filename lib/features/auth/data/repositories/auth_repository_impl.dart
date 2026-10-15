@@ -5,6 +5,7 @@ import '../../domain/repositories/auth_repository.dart';
 import '../../domain/results/google_login_result.dart';
 import '../datasources/auth_remote_datasource.dart';
 
+
 class AuthRepositoryImpl extends AuthRepository{
   
   final AuthRemoteDataSource remoteDataSource;
@@ -42,6 +43,21 @@ class AuthRepositoryImpl extends AuthRepository{
     );
     return userModel;
   }
+
+  @override
+  Future<UserEntity> completeProfile({
+    required String username,
+    required String displayName,
+    required DateTime birthDate,
+  }) async {
+    final userModel = await remoteDataSource.completeProfile(
+      username: username, 
+      displayName: displayName, 
+      birthDate: birthDate
+    );
+    return userModel;
+  }
+
 
   @override
   Future<void> logout() async { 

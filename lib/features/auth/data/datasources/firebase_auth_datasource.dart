@@ -78,7 +78,46 @@ class FirebaseAuthRemoteDataSource
   }
 
 
+  @override
+  Future<UserModel> completeProfile({
+    required String username,
+    required String displayName,
+    required DateTime birthDate,
+  }) async {
+    final firebaseUser = firebaseAuth.currentUser;
 
+    if (firebaseUser == null) {
+      throw Exception('No authenticated user');
+    }
+
+    final userDocument = await firestore
+    .collection('users')
+    .doc(firebaseUser.uid)
+    .get();
+
+    if (!userDocument.exists) {
+      throw Exception('User profile not found');
+    }
+
+    await firestore  //Modificamos los campos pa. 
+    .collection('users')
+    .doc(firebaseUser.uid)
+    .update({
+      'username': username,
+      'displayName': displayName,
+      'birthDate': birthDate.toIso8601String(), //Esto así pq así lo pusimos en el UserModel
+      'status': UserStatus.active.name,
+    });
+
+    final updatedDocument = await firestore
+      .collection('users')
+      .doc(firebaseUser.uid)
+      .get();
+
+    final updatedData = updatedDocument.data();
+
+    return UserModel.fromMap(updatedData!);
+  }
 
 
   @override
@@ -184,7 +223,7 @@ class FirebaseAuthRemoteDataSource
         .collection('users')
         .doc(firebaseUser.uid)
         .get();
-                                  //----PERFIL ESTÁ INCOMPLETO------
+    //----PERFIL ESTÁ INCOMPLETO------
     if (!userDocument.exists) {   //Si no existe el perfil en Firestore, significa que el usuario no ha completado su perfil.
       final userModel = UserModel(
         id: firebaseUser.uid,

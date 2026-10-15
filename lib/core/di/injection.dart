@@ -7,6 +7,7 @@ import 'package:skate_feed/features/auth/data/datasources/auth_remote_datasource
 import 'package:skate_feed/features/auth/data/datasources/firebase_auth_datasource.dart';
 import 'package:skate_feed/features/auth/domain/repositories/auth_repository.dart';
 import 'package:skate_feed/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:skate_feed/features/auth/domain/usecases/complete_profile_usecase.dart';
 
 //Use cases
 import 'package:skate_feed/features/auth/domain/usecases/login_usecase.dart';
@@ -15,6 +16,7 @@ import 'package:skate_feed/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:skate_feed/features/auth/domain/usecases/register_usecase.dart';
 import 'package:skate_feed/features/auth/domain/usecases/login_with_google_usecase.dart';
 import 'package:skate_feed/features/auth/domain/usecases/auth_state_changes_usecase.dart';
+import 'package:skate_feed/features/auth/presentation/blocs/complete_profile/complete_profile_bloc.dart';
 
 import 'package:skate_feed/features/auth/presentation/blocs/login/login_bloc.dart';
 import 'package:skate_feed/features/auth/presentation/blocs/register/register_bloc.dart';
@@ -37,6 +39,11 @@ Future<void> configureDependencies() async {
   sl.registerLazySingleton<GoogleSignIn>(
     () => GoogleSignIn.instance,
   );
+
+  await sl<GoogleSignIn>().initialize(
+    serverClientId:
+        '868666482465-0701o4rr30k2dntf7p3fv4jinbvtemm5.apps.googleusercontent.com',
+    );
 
   sl.registerLazySingleton<AuthRemoteDataSource>(  
     () => FirebaseAuthRemoteDataSource(     //
@@ -89,6 +96,12 @@ Future<void> configureDependencies() async {
     )
   );
 
+  sl.registerLazySingleton<CompleteProfileUseCase>(
+    () => CompleteProfileUseCase(
+      sl<AuthRepository>(),
+    )
+  );
+
   
 
   //------BLoCs----------------
@@ -105,6 +118,12 @@ Future<void> configureDependencies() async {
     ),
   );
 
+  sl.registerFactory<CompleteProfileBloc>(
+    () => CompleteProfileBloc(
+      sl<CompleteProfileUseCase>(),
+    )
+  );
+  
   sl.registerFactory<ForgotPasswordBloc>(
     () => ForgotPasswordBloc(
       sl<ForgotPasswordUseCase>(),

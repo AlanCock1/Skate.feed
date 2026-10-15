@@ -28,5 +28,11 @@ abstract class AuthRemoteDataSource {
     required String email,
   });
 
+  Future<UserModel> completeProfile({
+    required String username,
+    required String displayName,
+    required DateTime birthDate,
+  });
+  
   Stream<UserModel?> authStateChanges(); //Este es para detectar cada cambio de estado del usuario
 }

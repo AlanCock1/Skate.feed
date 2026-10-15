@@ -82,7 +82,7 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
                 ),
                 
               //----REENVIAR CORREO------------
-                SizedBox(height: 15),
+                SizedBox(height: 15), 
                 TextButton(
                   onPressed: () {
                     // Más adelante controlaremos el reenvío y el temporizador

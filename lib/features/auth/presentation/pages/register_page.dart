@@ -2,11 +2,13 @@
 /* 
 -------QUÉ NOS FALTA-----------
   -Validaciones de los TextEditingController
+  Al seleccionar no se ve nada en el campo del BirthDate
 */
 
 
 import 'package:flutter/material.dart';
 
+//WIDGETS
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
 import '../widgets/primary_auth_button.dart';
@@ -21,6 +23,11 @@ import 'package:skate_feed/core/di/injection.dart';
 import 'package:skate_feed/features/auth/presentation/blocs/register/register_bloc.dart';
 import '../blocs/register/register_event.dart';
 import '../blocs/register/register_state.dart';
+import '../blocs/google_login/google_login_bloc.dart';
+import '../blocs/google_login/google_login_event.dart';
+import '../blocs/google_login/google_login_state.dart';
+
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -39,12 +46,37 @@ class _RegisterPageState extends State<RegisterPage>{
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<RegisterBloc>(),
-      child: BlocListener<RegisterBloc, RegisterState>(
+    return MultiBlocProvider(  //Esta cosa is like: "Creo y pongo disponibles los BLoC.". En este caso son 2 Blocs pq tenemos el de Google y Register en la misma page.. thats why we use MultiBlocProvider instead of BlocProvider
+
+      providers: [
+        BlocProvider<RegisterBloc>(
+          create: (_) => sl<RegisterBloc>(),
+        ),
+
+        BlocProvider<GoogleLoginBloc>(
+          create: (_) => sl<GoogleLoginBloc>(),
+        ),
+      ],
+
+      child: Builder(
+      builder: (context) {
+      
+      return BlocListener<RegisterBloc, RegisterState>(
       listener:(context, state){
         // aquí reaccionaremos a los estados
         if (state is RegisterFailure) {
+         ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(state.message),
+            ),
+         );
+        }
+      },
+
+      child: BlocListener<GoogleLoginBloc, GoogleLoginState>(
+      listener:(context, state){
+        // aquí reaccionaremos a los estados
+        if (state is GoogleLoginFailure) {
          ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(state.message),
@@ -163,6 +195,9 @@ class _RegisterPageState extends State<RegisterPage>{
                   SizedBox(height: 15),
                   GoogleAuthButton(
                     onPressed: (){
+                      context.read<GoogleLoginBloc>().add(
+                        const GoogleLoginPressed(),
+                      );
 
                   }),
 
@@ -189,9 +224,12 @@ class _RegisterPageState extends State<RegisterPage>{
             ),
           ),
         ),
-      ),
-      ),
-    );
+        ),
+        ),
+      );
+    }, //el context del nuevo builder
+    ),
+  );
   }
 
    //Los controllers ocupan recursos tons this function is for removing those resources from'em

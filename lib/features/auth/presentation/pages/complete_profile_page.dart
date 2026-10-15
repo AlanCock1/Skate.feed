@@ -1,9 +1,18 @@
-  import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skate_feed/core/di/injection.dart';
 
-  import '../widgets/primary_auth_button.dart';
-  import '../widgets/username_field.dart';
-  import '../widgets/display_name_field.dart';
-  import '../widgets/birth_date_field.dart';
+
+//WIDGETS
+import '../widgets/primary_auth_button.dart';
+import '../widgets/username_field.dart';
+import '../widgets/display_name_field.dart';
+import '../widgets/birth_date_field.dart';
+
+//BLoC
+import '../blocs/complete_profile/complete_profile_state.dart';
+import 'package:skate_feed/features/auth/presentation/blocs/complete_profile/complete_profile_event.dart';
+import 'package:skate_feed/features/auth/presentation/blocs/complete_profile/complete_profile_bloc.dart';
 
 
 class CompleteProfilePage extends StatefulWidget {
@@ -19,7 +28,21 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     
     @override
     Widget build(BuildContext context) {
-      return Scaffold(
+      return BlocProvider(
+      create: (_) => sl<CompleteProfileBloc>(), //El BLoC nace mediante DI
+      child:BlocListener<CompleteProfileBloc, CompleteProfileState>(
+        listener:(context, state){
+         //Aqui reaccionamos a los estados
+         if(state is CompleteProfileFailure){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
+         }
+        },
+      
+      child: Scaffold(
         body: Container(
 
           decoration: const BoxDecoration(
@@ -83,12 +106,36 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
           
           // ---- Login Button -------
             SizedBox(height: 30),
-            PrimaryAuthButton( //Chat... Aquí qué hago? Porque en los demás pages aplicamos el BlocBuilder pero en este caso no hay Bloc para complete_page.
-                text: 'Empezar',
-                onPressed: () {
-                  //Aquí irá completePageBloc
-                },
-              ),
+            BlocBuilder<CompleteProfileBloc, CompleteProfileState>(
+              builder: (context, state) {
+                final isLoading = state is CompleteProfileLoading;
+
+                return PrimaryAuthButton(
+                  text: isLoading
+                  ? 'Completando Cuenta...'
+                  : 'Completar Cuenta', 
+                  onPressed: isLoading
+                  ? null
+                  : () {
+                    if(birthDate == null){
+                       ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Selecciona tu fecha de nacimiento'),
+                          ),
+                        );
+                      return;            
+                    }
+                    context.read<CompleteProfileBloc> ().add(
+                      CompleteProfileSubmitted(
+                        username: usernameController.text, 
+                        displayName: displayNameController.text, 
+                        birthDate: birthDate!
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           // --------------------------------------------------
 
       
@@ -99,6 +146,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         ),
       ),
     )
+  ),
+  ),
   );
   }
   @override

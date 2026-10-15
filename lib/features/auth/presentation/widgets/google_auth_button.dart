@@ -12,7 +12,7 @@ class GoogleAuthButton extends StatelessWidget{
   Widget build(BuildContext context){ 
     return SizedBox(
       height: 50,
-     child: OutlinedButton.icon(
+      child: OutlinedButton.icon(
         onPressed: onPressed,
         icon: Icon(Icons.beach_access),
         label: Text( 'Iniciar sesión con Google'),
