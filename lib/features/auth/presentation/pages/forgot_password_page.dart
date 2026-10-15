@@ -96,7 +96,24 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
                   ),
                 ),
               //-----------------------
+            
+              // ---- Regresar a LoginPage-------
+                SizedBox(height: 10),
+                Align(alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
 
+                  child: Text(
+                    'Regresa a Iniciar Sesión',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                )),
+        // --------------------------------------------------
 
 
 

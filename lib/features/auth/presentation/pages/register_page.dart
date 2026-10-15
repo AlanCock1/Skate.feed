@@ -206,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage>{
                   Align(alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        // Llevará de regreso a login 
+                        Navigator.of(context).pop(); //Regresa a Login con el puro .pop()
                       },
 
                       child: Text(

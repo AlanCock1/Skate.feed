@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skate_feed/features/auth/presentation/pages/forgot_password_page.dart';
 
 import '../widgets/email_field.dart';
 import '../widgets/password_field.dart';
@@ -11,6 +12,8 @@ import 'package:skate_feed/core/di/injection.dart';
 import 'package:skate_feed/features/auth/presentation/blocs/login/login_bloc.dart';
 import '../blocs/login/login_event.dart';
 import '../blocs/login/login_state.dart';
+
+import '../pages/register_page.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -98,13 +101,39 @@ class _LoginPageState extends State<LoginPage> {
               controller: passwordController,
             ),
 
+        //----Registrarse TextButton------
+            SizedBox(height: 15),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).push( //El Navigator.push es lo que lleva a la siguuiente página, y con el pop(), hace que regrese a la página original (login, porque ahí está el push)
+                    MaterialPageRoute(
+                      builder: (_) => const RegisterPage(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  '¿No tienes cuenta? Regístrate aquí',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ),
+        //--------------------------------------------------------
+        
         // ---- ForgotPassword Text-------
             SizedBox(height: 10),
-
             Align(alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
-                // Llevará a ForgotPasswordPage 
+                 Navigator.of(context).push( 
+                    MaterialPageRoute(
+                      builder: (_) => const ForgotPasswordPage(),
+                    ),
+                 );
               },
 
               child: Text(

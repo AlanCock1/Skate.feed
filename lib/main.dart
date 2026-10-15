@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'; //Importamos flutter
 import 'package:firebase_core/firebase_core.dart'; //importamos firebase
+import 'package:skate_feed/features/auth/presentation/pages/login_page.dart';
 import 'package:skate_feed/features/auth/presentation/pages/register_page.dart';
 import 'firebase_options.dart'; //importamos el archivo que generó Flutterfirepara la configuración de Firebase
 
@@ -30,7 +31,7 @@ class SkateFeedApp extends StatelessWidget { //Creamos la clase principal de nue
       theme: ThemeData( //Tema de la aplicación
         primarySwatch: Colors.blue, //Color primario de la aplicación
       ),
-      home: const RegisterPage(), //Pantalla principal de la aplicación
+      home: const LoginPage(), //Pantalla principal de la aplicación
       
     );
   }
