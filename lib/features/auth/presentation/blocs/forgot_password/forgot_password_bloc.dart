@@ -16,15 +16,18 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
       : super(const ForgotPasswordInitial()) {
 
     on<ForgotPasswordSubmitted>((event, emit) async {
+      print('🔥# # # # ForgotPasswordPressed recibido');
       emit(const ForgotPasswordLoading());
+
       try {
         await forgotPasswordUseCase(
           email: event.email
           );
-
+        print('🔥 ##### ForgotPassword terminó correctamente');
         emit(const ForgotPasswordSuccess());
 
       } catch (error) {
+        print('🔥 #### ERROR Forgot Password: $error');
         emit(ForgotPasswordFailure(error.toString()));
       }
     });

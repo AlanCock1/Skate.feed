@@ -21,10 +21,10 @@ class ForgotPasswordSuccess extends ForgotPasswordState {
 }
 
 class ForgotPasswordFailure extends ForgotPasswordState {
-  final String error;
+  final String message;
 
-  const ForgotPasswordFailure(this.error);
+  const ForgotPasswordFailure(this.message);
 
   @override
-  List<Object?> get props => [error];
+  List<Object?> get props => [message];
 }
