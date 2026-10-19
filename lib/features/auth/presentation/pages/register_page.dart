@@ -27,6 +27,12 @@ import '../blocs/google_login/google_login_bloc.dart';
 import '../blocs/google_login/google_login_event.dart';
 import '../blocs/google_login/google_login_state.dart';
 
+// google shi
+import '../../domain/results/google_login_result.dart';
+
+//Pages
+import '../pages/complete_profile_page.dart';
+
 
 
 class RegisterPage extends StatefulWidget {
@@ -43,6 +49,8 @@ class _RegisterPageState extends State<RegisterPage>{
   final usernameController= TextEditingController();
   final displayNameController = TextEditingController();
   DateTime? birthDate;  
+  final formKey = GlobalKey<FormState>(); //Con esta madre vamos a validar los campos
+
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +90,24 @@ class _RegisterPageState extends State<RegisterPage>{
             content: Text(state.message),
             ),
          );
+        }
+        if (state is GoogleLoginSuccess) {
+          final result = state.result;
+
+          if (result is GoogleLoginProfileIncomplete) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => const CompleteProfilePage(),
+              ),
+            );
+          } else if (result is GoogleLoginProfileCompleted) {
+            // TODO: Navegar a la pantalla principal cuando definamos esa ruta.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Hola te mando al mapa"),
+              ),
+            );
+          }
         }
       },
 
@@ -126,8 +152,11 @@ class _RegisterPageState extends State<RegisterPage>{
                   ),
 
                   SizedBox(height: 30),
-                  EmailField(
-                    controller: emailController,
+                  Form( //Con esto asociamos el campo con el FormKey para poder ejecutar la validación
+                    key: formKey,
+                    child: EmailField(
+                      controller: emailController,
+                    ),
                   ),
 
                   SizedBox(height: 15),
@@ -166,6 +195,7 @@ class _RegisterPageState extends State<RegisterPage>{
                         onPressed: isLoading
                          ? null
                          : () {
+                          if (formKey.currentState!.validate()) {
                               if (birthDate == null) {   //Este if es la validación del campo de birtDate. Para que si el usuario no selecciono ninguna fecha, no entre el evento
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
@@ -174,17 +204,18 @@ class _RegisterPageState extends State<RegisterPage>{
                                   );
                                   return;
                                 }
-
-                              context.read<RegisterBloc>().add(
-                                RegisterSubmitted(
-                                  email: emailController.text,
-                                  password: passwordController.text, 
-                                  username: usernameController.text, 
-                                  displayName: displayNameController.text, 
-                                  birthDate: birthDate!,
-                      
-                                ),
-                              );
+                              
+                                context.read<RegisterBloc>().add(
+                                  RegisterSubmitted(
+                                    email: emailController.text,
+                                    password: passwordController.text, 
+                                    username: usernameController.text, 
+                                    displayName: displayNameController.text, 
+                                    birthDate: birthDate!,
+                        
+                                  ),
+                                );
+                              }
                          }, 
                       );
                     },

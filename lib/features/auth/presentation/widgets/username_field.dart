@@ -14,6 +14,18 @@ class UsernameField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'El nombre de usuario es obligatorio';
+        }
+        if (value.length > 10) {
+          return 'El nombre de usuario debe ser de 10 dígitos máximo';
+        }
+        return null;
+
+        // FALTA LO DE USERNAME ÚNICO
+      },
+
       decoration: InputDecoration(
         labelText: 'Username',
         hintText: 'Ingresa tu nombre de usuario',

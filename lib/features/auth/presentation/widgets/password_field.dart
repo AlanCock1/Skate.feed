@@ -15,6 +15,18 @@ class PasswordField extends StatelessWidget {
     return TextFormField(
       controller: controller,
 
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'La contraseña es obligatoria';
+        }
+
+        if (value.length < 6) {
+          return 'La contraseña debe tener al menos 6 caracteres';
+        }
+
+        return null;
+      },
+      
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'Contraseña',

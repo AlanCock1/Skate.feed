@@ -12,6 +12,8 @@ import '../blocs/forgot_password/forgot_password_bloc.dart';
 import '../blocs/forgot_password/forgot_password_state.dart';
 import '../blocs/forgot_password/forgot_password_event.dart';
 
+//TIMER
+import 'dart:async';
 
 class ForgotPasswordPage extends StatefulWidget {
 
@@ -25,6 +27,10 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
 
   final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>(); //Con esta madre vamos a validar el correo 
+  Timer? resendTimer;
+  int secondsRemaining = 0;
+  bool emailSent = false;
+  bool showResendMessage = false;
   
   @override
   Widget build(BuildContext context) {
@@ -52,6 +58,14 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
           }  
 
           if(state is ForgotPasswordSuccess){
+            // Añado aquí el emailSent porque así, el temporizador comienza solo cuando la solicitud termina correctamente, no cuando el usuario pulsa el botón.
+            setState(() {
+              emailSent = true;
+              showResendMessage = true;
+            });
+            startResendTimer();
+
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar( 
                 content: Text(
@@ -61,7 +75,7 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
                   'Si la dirección está registrada, recibirás un correo '
                   'con las instrucciones para restablecer tu contraseña.',
                   */),
-                duration: const Duration(seconds: 4),
+                duration: const Duration(seconds: 5),
 
               ),
             );
@@ -123,19 +137,21 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
                 BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
                   builder: (context, state){
                     final isLoading = state is ForgotPasswordLoading;
+                    final isCoolingDown = emailSent && secondsRemaining > 0;
+                    final isDisabled = isLoading || isCoolingDown;
 
                     return PrimaryAuthButton(
                       text: isLoading
                       ? 'Enviando correo...'
                       : 'Enviar correo',
-                      onPressed: isLoading 
-                      ? null
+                      onPressed: isDisabled
+                      ? null  
                       : () {
                         if (formKey.currentState!.validate()) {
                         // El correo pasó la validación.
                           context.read<ForgotPasswordBloc>().add(
                             ForgotPasswordSubmitted(
-                              email: emailController.text,
+                              email: emailController.text.trim(),
                           ),
                         );
                         }
@@ -147,19 +163,20 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
 
             //FALTA ESTE TMB
               //----REENVIAR CORREO------------
-                SizedBox(height: 15), 
-                TextButton(
-                  onPressed: () {
-                    // Más adelante controlaremos el reenvío y el temporizador
-                  },
-                  child: Text(
-                    '¿No recibiste el correo? Reenviar',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
+                SizedBox(height: 15),  
+                  if (showResendMessage && secondsRemaining > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15),
+                      child: Text(
+                        'Reenviar correo en ${secondsRemaining}s',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                ),
+              
               //-----------------------
             
               // ---- Regresar a LoginPage-------
@@ -196,8 +213,36 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
   @override
     void dispose() {
       emailController.dispose();
+      resendTimer?.cancel();
       super.dispose();
     }
+
+
+  // FUNCIÓN DEL TIMER
+  void startResendTimer() {
+    resendTimer?.cancel();
+
+    setState(() {
+      secondsRemaining = 60;
+    });
+
+    resendTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (timer) {
+        if (secondsRemaining <= 1) {
+          timer.cancel();
+
+          setState(() {
+            secondsRemaining = 0;
+          });
+        } else {
+          setState(() {
+            secondsRemaining--;
+          });
+        }
+      },
+    );
+  }
 
 }
 

@@ -25,6 +25,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     final usernameController = TextEditingController();
     final displayNameController = TextEditingController();
     DateTime? birthDate;
+    final formKey = GlobalKey<FormState>(); //Con esta madre vamos a validar los campos
+
     
     @override
     Widget build(BuildContext context) {
@@ -39,6 +41,13 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
               content: Text(state.message),
             ),
           );
+         }
+         if(state is CompleteProfileSuccess){
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Hola te mando al mapa"),
+              ),
+            );
          }
         },
       
@@ -86,22 +95,38 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                       fontSize: 16,
                     ),
                   ),
-              SizedBox(height: 15),
-              UsernameField(
-                controller: usernameController,
+
+              
+              Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    
+                    SizedBox(height: 15),
+                    UsernameField(
+                      controller: usernameController,
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    DisplayNameField(
+                      controller: displayNameController,
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    BirthDateField(
+                      selectedDate: birthDate,
+                      onDateSelected: (date) {
+                        setState(() {
+                          birthDate = date;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
 
-              SizedBox(height: 15),
-              DisplayNameField(
-                controller: displayNameController,
-              ),
-
-              SizedBox(height: 15),
-              BirthDateField(onDateSelected: (date) {
-                setState(() {
-                  birthDate = date;
-                });
-              },),
 
           
           // ---- Login Button -------
@@ -117,14 +142,10 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                   onPressed: isLoading
                   ? null
                   : () {
-                    if(birthDate == null){
-                       ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Selecciona tu fecha de nacimiento'),
-                          ),
-                        );
-                      return;            
-                    }
+                     if (!formKey.currentState!.validate()) {
+                        return;
+                      }         
+                  
                     context.read<CompleteProfileBloc> ().add(
                       CompleteProfileSubmitted(
                         username: usernameController.text, 
