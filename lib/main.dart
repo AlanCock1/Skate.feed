@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart'; //Importamos flutter
 import 'package:firebase_core/firebase_core.dart'; //importamos firebase
 import 'package:skate_feed/features/auth/presentation/pages/login_page.dart';
-import 'package:skate_feed/features/auth/presentation/pages/register_page.dart';
 import 'firebase_options.dart'; //importamos el archivo que generó Flutterfirepara la configuración de Firebase
 
 import 'core/di/injection.dart'; //Importamos nuestro archivo de inyección de dependencias

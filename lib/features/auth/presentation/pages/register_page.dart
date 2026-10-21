@@ -154,35 +154,41 @@ class _RegisterPageState extends State<RegisterPage>{
                   SizedBox(height: 30),
                   Form( //Con esto asociamos el campo con el FormKey para poder ejecutar la validación
                     key: formKey,
-                    child: EmailField(
-                      controller: emailController,
+                    child: Column( 
+                      children: [
+                        SizedBox(height: 15),
+                        EmailField(
+                        controller: emailController,
+                        ),
+                 
+                        SizedBox(height: 15),
+                        UsernameField(
+                          controller: usernameController,
+                        ),
+
+                        SizedBox(height: 15),
+                        DisplayNameField(
+                          controller: displayNameController,
+                        ),
+
+                        SizedBox(height: 15),
+                        BirthDateField(
+                          onDateSelected: (date) { // Esto significa: Cuando BirthDateField me entregue una fecha, recibe esa fecha aquí como date
+                            setState(() {  //Esta madre es para el callback 
+                              birthDate = date;
+                            });
+                          },
+                        ),
+
+                        SizedBox(height: 15),
+                        PasswordField(
+                          controller: passwordController,
+                        ),
+                      ],
                     ),
                   ),
 
-                  SizedBox(height: 15),
-                  UsernameField(
-                    controller: usernameController,
-                  ),
-
-                  SizedBox(height: 15),
-                  DisplayNameField(
-                    controller: displayNameController,
-                  ),
-
-                  SizedBox(height: 15),
-                  BirthDateField(
-                    onDateSelected: (date) { // Esto significa: Cuando BirthDateField me entregue una fecha, recibe esa fecha aquí como date
-                      setState(() {  //Esta madre es para el callback 
-                        birthDate = date;
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 15),
-                  PasswordField(
-                    controller: passwordController,
-                  ),
-
+                  // -----PrimaryAuthButton ------
                   SizedBox(height: 15),
                   BlocBuilder<RegisterBloc, RegisterState>(
                     builder: (context, state) {

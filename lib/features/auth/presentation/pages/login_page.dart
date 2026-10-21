@@ -12,8 +12,19 @@ import 'package:skate_feed/core/di/injection.dart';
 import 'package:skate_feed/features/auth/presentation/blocs/login/login_bloc.dart';
 import '../blocs/login/login_event.dart';
 import '../blocs/login/login_state.dart';
+import '../blocs/google_login/google_login_bloc.dart';
+import '../blocs/google_login/google_login_state.dart';
+import '../blocs/google_login/google_login_event.dart';
 
+
+// google shi
+import '../../domain/results/google_login_result.dart';
+
+//Pages
 import '../pages/register_page.dart';
+import '../pages/complete_profile_page.dart';
+
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -26,12 +37,26 @@ class _LoginPageState extends State<LoginPage> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>(); //Con esta madre vamos a validar los campos
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(   // Bloc Provider hace que ese BLoC (LoginBloc, created next line) esté disponible para los widgets que estén debajo de él.
-      create: (_) => sl<LoginBloc>(), //This line its like: “Crea un LoginBloc usando la instancia/configuración que registramos en GetIt.”
-      child: BlocListener<LoginBloc, LoginState>(
+    return MultiBlocProvider(   // Bloc Provider hace que ese BLoC (LoginBloc, created next line) esté disponible para los widgets que estén debajo de él.
+      
+      providers: [
+        BlocProvider<LoginBloc>(
+          create:(_) => sl<LoginBloc>()
+          ),   //This line its like: “Crea un LoginBloc usando la instancia/configuración que registramos en GetIt.”
+       
+        BlocProvider<GoogleLoginBloc>(
+          create: (_) => sl<GoogleLoginBloc>(),
+        ),
+      ],
+
+      child: Builder(
+      builder: (context) {
+      
+      return BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           // aquí reaccionaremos a los estados
           if (state is LoginFailure) {
@@ -41,7 +66,41 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
           }
+
+          //Reaccionar al estado Success
         },
+
+        child: BlocListener<GoogleLoginBloc, GoogleLoginState>(
+        listener:(context, state){
+        // aquí reaccionaremos a los estados
+        if (state is GoogleLoginFailure) {
+         ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(state.message),
+            ),
+         );
+        }
+        if (state is GoogleLoginSuccess) {
+          final result = state.result;
+
+          if (result is GoogleLoginProfileIncomplete) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (_) => const CompleteProfilePage(),
+              ),
+            );
+          } else if (result is GoogleLoginProfileCompleted) {
+            // TODO: Navegar a la pantalla principal cuando definamos esa ruta.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Hola te mando al mapa"),
+              ),
+            );
+          }
+        }
+      },
+
+      
         
       child: Scaffold(
       body: Container(
@@ -88,17 +147,24 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
 
+          Form(
+            key: formKey,
+            child: Column(
+              children: [
 
-            SizedBox(height: 25),
-            EmailField(
-              controller: emailController,  //With this we receive the text writted by the user
+                SizedBox(height: 25),
+                EmailField(
+                  controller: emailController,  //With this we receive the text writted by the user
+                ),
+
+                SizedBox(height: 20),
+                PasswordField(
+                  controller: passwordController,
+                ),
+              ],
             ),
+          ),
 
-
-            SizedBox(height: 20),
-            PasswordField(
-              controller: passwordController,
-            ),
 
         //----Registrarse TextButton------
             SizedBox(height: 15),
@@ -174,7 +240,9 @@ class _LoginPageState extends State<LoginPage> {
         SizedBox(height: 15 ),
         GoogleAuthButton(
           onPressed: () {
-              //GoogleLoginBloc 
+              context.read<GoogleLoginBloc>().add(
+                const GoogleLoginPressed(),
+            );
           }) 
 
 
@@ -192,8 +260,11 @@ class _LoginPageState extends State<LoginPage> {
       ),
       ),
       ),
-    );
-  }
+      );
+    },
+  ),
+  );
+}
   //Los controllers ocupan recursos tons this function is for removing those resources from'em
   @override
     void dispose() {
