@@ -82,130 +82,142 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
           }    
         },
 
-    child:  Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.blueGrey,
-              Colors.black,
-            ],
-          ),
-        ),
-
-        child: Center(
-          child: SizedBox(
-            width: 350,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Recupera tu contraseña',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+   
+          child: Scaffold(
+            backgroundColor: Colors.black,
+            resizeToAvoidBottomInset: true,
+            body: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.blueGrey,
+                    Colors.black,
+                  ],
                 ),
-
-                SizedBox(height: 10),
-                Text(
-                  'Te enviaremos un correo para renovar tu contraseña',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
+              ),
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 24,
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        maxWidth: 350,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
 
-                SizedBox(height: 30),
-                Form( //Con esto asociamos el campo con el FormKey para poder ejecutar la validación
-                  key: formKey,
-                  child: EmailField(
-                    controller: emailController,
-                  ),
-                ),
-                
-
-                
-              //AÑADÍ AQUÍ EL BLOCBUILDER, PARA ENLAZAR EL EVENTO AL BOTÓN
-              // ------falta añadir el temporizador
-                SizedBox(height: 15),
-                BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
-                  builder: (context, state){
-                    final isLoading = state is ForgotPasswordLoading;
-                    final isCoolingDown = emailSent && secondsRemaining > 0;
-                    final isDisabled = isLoading || isCoolingDown;
-
-                    return PrimaryAuthButton(
-                      text: isLoading
-                      ? 'Enviando correo...'
-                      : 'Enviar correo',
-                      onPressed: isDisabled
-                      ? null  
-                      : () {
-                        if (formKey.currentState!.validate()) {
-                        // El correo pasó la validación.
-                          context.read<ForgotPasswordBloc>().add(
-                            ForgotPasswordSubmitted(
-                              email: emailController.text.trim(),
+                          const Text(
+                            'Recupera tu contraseña',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        );
-                        }
-                      },
-                    );
-                  },
-                ),
-  
 
-            //FALTA ESTE TMB
-              //----REENVIAR CORREO------------
-                SizedBox(height: 15),  
-                  if (showResendMessage && secondsRemaining > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15),
-                      child: Text(
-                        'Reenviar correo en ${secondsRemaining}s',
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
-                        ),
-                        textAlign: TextAlign.center,
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Te enviaremos un correo para renovar tu contraseña',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 30),
+                          Form(
+                            key: formKey,
+                            child: EmailField(
+                              controller: emailController,
+                            ),
+                          ),
+
+                      //  -----  ENVIAR CORREO --------------
+                          const SizedBox(height: 15),
+                          BlocBuilder<ForgotPasswordBloc, ForgotPasswordState>(
+                            builder: (context, state) {
+                              final isLoading =
+                                  state is ForgotPasswordLoading;
+
+                              final isCoolingDown =
+                                  emailSent && secondsRemaining > 0;
+
+                              final isDisabled =
+                                  isLoading || isCoolingDown;
+
+                              return PrimaryAuthButton(
+                                text: isLoading
+                                    ? 'Enviando correo...'
+                                    : 'Enviar correo',
+                                onPressed: isDisabled
+                                    ? null
+                                    : () {
+                                        if (!formKey.currentState!.validate()) {
+                                          return;
+                                        }
+
+                                        context.read<ForgotPasswordBloc>().add(
+                                              ForgotPasswordSubmitted(
+                                                email: emailController.text.trim(),
+                                              ),
+                                            );
+                                      },
+                              );
+                            },
+                          ),
+
+                    // ---- REENVIAR CORREO -------------
+                          const SizedBox(height: 15),
+                          if (showResendMessage && secondsRemaining > 0)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text(
+                                'Reenviar correo en ${secondsRemaining}s',
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
+                      // --- REGRESAR A LOGIN ------
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text(
+                                'Regresa a Iniciar Sesión',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-              
-              //-----------------------
-            
-              // ---- Regresar a LoginPage-------
-                SizedBox(height: 10),
-                Align(alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-
-                  child: Text(
-                    'Regresa a Iniciar Sesión',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
                   ),
-                )),
-        // --------------------------------------------------
-
-
-
-
-              ],
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    ),
+
     ),
   );
   }

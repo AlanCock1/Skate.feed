@@ -67,7 +67,15 @@ class _LoginPageState extends State<LoginPage> {
             );
           }
 
-          //Reaccionar al estado Success
+          if(state is LoginSuccess){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Hola te mando al mapa"),
+              ),
+            );
+
+            // if de google  m
+          }
         },
 
         child: BlocListener<GoogleLoginBloc, GoogleLoginState>(
@@ -102,33 +110,40 @@ class _LoginPageState extends State<LoginPage> {
 
       
         
-      child: Scaffold(
-      body: Container(
-
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.grey,
-              Colors.black,
-            ],
-          ),
+      
+child: Scaffold(
+   backgroundColor: Colors.black,
+  resizeToAvoidBottomInset: true,
+  body: Container(
+    width: double.infinity,
+    height: double.infinity,
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Colors.grey,
+          Colors.black,
+        ],
+      ),
+    ),
+    child: SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 24,
         ),
-
-
-      child: Center(
-        child: SizedBox(
-        width: 350,
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-
-          children: [
-
-            //---- TITLE ------
-            Text(
-              'Welcome to Skate.feed',
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 350,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Welcome to Skate.feed',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -136,129 +151,122 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
 
+                const SizedBox(height: 40),
 
-
-            SizedBox(height: 40),
-            Text(
-              'Inicia sesión para continuar',
+                const Text(
+                  'Inicia sesión para continuar',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
                   ),
                 ),
 
-          Form(
-            key: formKey,
-            child: Column(
-              children: [
-
-                SizedBox(height: 25),
-                EmailField(
-                  controller: emailController,  //With this we receive the text writted by the user
+                Form(
+                  key: formKey,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 25),
+                      EmailField(
+                        controller: emailController,
+                      ),
+                      const SizedBox(height: 20),
+                      PasswordField(
+                        controller: passwordController,
+                      ),
+                    ],
+                  ),
                 ),
 
-                SizedBox(height: 20),
-                PasswordField(
-                  controller: passwordController,
+                const SizedBox(height: 15),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterPage(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      '¿No tienes cuenta? Regístrate aquí',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const ForgotPasswordPage(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      '¿Olvidaste tu contraseña?',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                BlocBuilder<LoginBloc, LoginState>(
+                  builder: (context, state) {
+                    final isLoading = state is LoginLoading;
+
+                    return PrimaryAuthButton(
+                      text: isLoading
+                          ? 'Iniciando sesión...'
+                          : 'Iniciar sesión',
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              if (!formKey.currentState!.validate()) {
+                                return;
+                              }
+
+                              context.read<LoginBloc>().add(
+                                    LoginSubmitted(
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                    ),
+                                  );
+                            },
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 15),
+
+                GoogleAuthButton(
+                  onPressed: () {
+                    context.read<GoogleLoginBloc>().add(
+                          const GoogleLoginPressed(),
+                        );
+                  },
                 ),
               ],
             ),
           ),
-
-
-        //----Registrarse TextButton------
-            SizedBox(height: 15),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).push( //El Navigator.push es lo que lleva a la siguuiente página, y con el pop(), hace que regrese a la página original (login, porque ahí está el push)
-                    MaterialPageRoute(
-                      builder: (_) => const RegisterPage(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  '¿No tienes cuenta? Regístrate aquí',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-        //--------------------------------------------------------
-        
-        // ---- ForgotPassword Text-------
-            SizedBox(height: 10),
-            Align(alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () {
-                 Navigator.of(context).push( 
-                    MaterialPageRoute(
-                      builder: (_) => const ForgotPasswordPage(),
-                    ),
-                 );
-              },
-
-              child: Text(
-                '¿Olvidaste tu contraseña?',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 14,
-                ),
-              ),
-            )),
-        // --------------------------------------------------
-
-        // ---- Login Button -------
-          SizedBox(height: 30),
-          BlocBuilder<LoginBloc, LoginState>(
-            builder: (context, state) {
-              final isLoading = state is LoginLoading;
-
-              return PrimaryAuthButton(
-                text: isLoading
-                    ? 'Iniciando sesión...'   //Todo esto es para que dependiendo del estado del usuario (Initial o Loading), muestre el botón disponible o no. Está perro.
-                    : 'Iniciar sesión',
-                onPressed: isLoading
-                    ? null
-                    : () {
-                        context.read<LoginBloc>().add(
-                          LoginSubmitted(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          ),
-                        );
-                      },
-              );
-            },
-          ),
-        // --------------------------------------------------
-
-        //----Google Login----- 
-        SizedBox(height: 15 ),
-        GoogleAuthButton(
-          onPressed: () {
-              context.read<GoogleLoginBloc>().add(
-                const GoogleLoginPressed(),
-            );
-          }) 
-
-
-
-          ],
         ),
       ),
     ),
-  
+  ),
+),
 
-
-
-
-
-      ),
-      ),
       ),
       );
     },

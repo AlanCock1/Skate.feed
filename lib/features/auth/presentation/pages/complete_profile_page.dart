@@ -52,8 +52,11 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         },
       
       child: Scaffold(
+        backgroundColor: Colors.black,
+        resizeToAvoidBottomInset: true,
         body: Container(
-
+          width: double.infinity,
+          height: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -64,110 +67,111 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
               ],
             ),
           ),
-
-
-        child: Center(
-          child: SizedBox(
-          width: 350,
-
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-
-            children: [
-
-              //---- TITLE ------
-              Text(
-                'Welcome to Skate.feed',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 24,
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 350,
                   ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Welcome to Skate.feed',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
 
+                      const SizedBox(height: 40),
 
+                      const Text(
+                        'Solo un pequeño paso más para comenzar...',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 16,
+                        ),
+                      ),
 
-              SizedBox(height: 40),
-              Text(
-                'Solo un pequeño paso más para comenzar...',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                    ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 15),
+
+                            UsernameField(
+                              controller: usernameController,
+                            ),
+
+                            const SizedBox(height: 15),
+
+                            DisplayNameField(
+                              controller: displayNameController,
+                            ),
+
+                            const SizedBox(height: 15),
+
+                            BirthDateField(
+                              selectedDate: birthDate,
+                              onDateSelected: (date) {
+                                setState(() {
+                                  birthDate = date;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 30),
+
+                      BlocBuilder<CompleteProfileBloc, CompleteProfileState>(
+                        builder: (context, state) {
+                          final isLoading =
+                              state is CompleteProfileLoading;
+
+                          return PrimaryAuthButton(
+                            text: isLoading
+                                ? 'Completando Cuenta...'
+                                : 'Completar Cuenta',
+                            onPressed: isLoading
+                                ? null
+                                : () {
+                                    if (!formKey.currentState!.validate()) {
+                                      return;
+                                    }
+
+                                    context
+                                        .read<CompleteProfileBloc>()
+                                        .add(
+                                          CompleteProfileSubmitted(
+                                            username:
+                                                usernameController.text.trim(),
+                                            displayName:
+                                                displayNameController.text.trim(),
+                                            birthDate: birthDate!,
+                                          ),
+                                        );
+                                  },
+                          );
+                        },
+                      ),
+                    ],
                   ),
-
-              
-              Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    
-                    SizedBox(height: 15),
-                    UsernameField(
-                      controller: usernameController,
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    DisplayNameField(
-                      controller: displayNameController,
-                    ),
-
-                    const SizedBox(height: 15),
-
-                    BirthDateField(
-                      selectedDate: birthDate,
-                      onDateSelected: (date) {
-                        setState(() {
-                          birthDate = date;
-                        });
-                      },
-                    ),
-                  ],
                 ),
               ),
-
-
-          
-          // ---- Login Button -------
-            SizedBox(height: 30),
-            BlocBuilder<CompleteProfileBloc, CompleteProfileState>(
-              builder: (context, state) {
-                final isLoading = state is CompleteProfileLoading;
-
-                return PrimaryAuthButton(
-                  text: isLoading
-                  ? 'Completando Cuenta...'
-                  : 'Completar Cuenta', 
-                  onPressed: isLoading
-                  ? null
-                  : () {
-                     if (!formKey.currentState!.validate()) {
-                        return;
-                      }         
-                  
-                    context.read<CompleteProfileBloc> ().add(
-                      CompleteProfileSubmitted(
-                        username: usernameController.text, 
-                        displayName: displayNameController.text, 
-                        birthDate: birthDate!
-                      ),
-                    );
-                  },
-                );
-              },
             ),
-          // --------------------------------------------------
-
-      
-
-
-            ],
           ),
         ),
       ),
-    )
-  ),
   ),
   );
   }
