@@ -2,7 +2,7 @@ import 'package:flutter/material.dart'; //Importamos flutter
 import 'package:firebase_core/firebase_core.dart'; //importamos firebase
 import 'package:skate_feed/features/auth/presentation/pages/login_page.dart';
 import 'firebase_options.dart'; //importamos el archivo que generó Flutterfirepara la configuración de Firebase
-
+import 'features/map/presentation/pages/map_page.dart';
 import 'core/di/injection.dart'; //Importamos nuestro archivo de inyección de dependencias
 //import 'features/auth/presentation/pages/login_page.dart'; //Importamos la página de login 
 //import 'features/auth/presentation/pages/register_page.dart';
@@ -30,7 +30,7 @@ class SkateFeedApp extends StatelessWidget { //Creamos la clase principal de nue
       theme: ThemeData( //Tema de la aplicación
         primarySwatch: Colors.blue, //Color primario de la aplicación
       ),
-      home: const LoginPage(), //Pantalla principal de la aplicación
+      home: const MapPage(), //Pantalla principal de la aplicación
       
     );
   }
