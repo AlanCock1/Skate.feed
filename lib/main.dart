@@ -30,7 +30,7 @@ class SkateFeedApp extends StatelessWidget { //Creamos la clase principal de nue
       theme: ThemeData( //Tema de la aplicación
         primarySwatch: Colors.blue, //Color primario de la aplicación
       ),
-      home: const MapPage(), //Pantalla principal de la aplicación
+      home: const LoginPage(), //Pantalla principal de la aplicación
       
     );
   }

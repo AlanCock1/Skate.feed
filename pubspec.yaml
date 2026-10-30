@@ -51,9 +51,15 @@ dependencies:
   # Google Sign-In
   google_sign_in: ^7.2.0
   bloc: ^9.2.1
-  google_maps_flutter: 2.18.1
   #----------------------------------------------
 
+  # ---------------- SPRINT 2 ----------------
+  # Google Maps
+  google_maps_flutter: 2.18.1
+
+  # Geolocalización y distancias
+  geolocator: ^14.1.2
+  # ------------------------------------------
 dev_dependencies:
   flutter_test:
     sdk: flutter

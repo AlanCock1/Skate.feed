@@ -23,7 +23,7 @@ import '../../domain/results/google_login_result.dart';
 //Pages
 import '../pages/register_page.dart';
 import '../pages/complete_profile_page.dart';
-
+import '../../../map/presentation/pages/map_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
           create: (_) => sl<GoogleLoginBloc>(),
         ),
       ],
-
+    
       child: Builder(
       builder: (context) {
       
@@ -68,12 +68,12 @@ class _LoginPageState extends State<LoginPage> {
           }
 
           if(state is LoginSuccess){
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Hola te mando al mapa"),
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => const MapPage(),
               ),
+              (route) => false,
             );
-
             // if de google  m
           }
         },
@@ -92,17 +92,20 @@ class _LoginPageState extends State<LoginPage> {
           final result = state.result;
 
           if (result is GoogleLoginProfileIncomplete) {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                 builder: (_) => const CompleteProfilePage(),
               ),
+              (route) => false,
+
             );
           } else if (result is GoogleLoginProfileCompleted) {
-            // TODO: Navegar a la pantalla principal cuando definamos esa ruta.
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Hola te mando al mapa"),
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => const MapPage(),
               ),
+              (route) => false,
+
             );
           }
         }
@@ -179,25 +182,25 @@ child: Scaffold(
 
                 const SizedBox(height: 15),
 
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const RegisterPage(),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const RegisterPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '¿No tienes cuenta? Regístrate aquí',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
                         ),
-                      );
-                    },
-                    child: const Text(
-                      '¿No tienes cuenta? Regístrate aquí',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
                       ),
                     ),
                   ),
-                ),
 
                 const SizedBox(height: 10),
 

@@ -32,6 +32,7 @@ import '../../domain/results/google_login_result.dart';
 
 //Pages
 import '../pages/complete_profile_page.dart';
+import '../../../map/presentation/pages/map_page.dart';
 
 
 
@@ -79,6 +80,15 @@ class _RegisterPageState extends State<RegisterPage>{
             ),
          );
         }
+
+        if (state is RegisterSuccess) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => const MapPage(),
+              ),
+              (route) => false,
+          );
+        }
       },
 
       child: BlocListener<GoogleLoginBloc, GoogleLoginState>(
@@ -91,9 +101,10 @@ class _RegisterPageState extends State<RegisterPage>{
             ),
          );
         }
+        
         if (state is GoogleLoginSuccess) {
           final result = state.result;
-
+          
           if (result is GoogleLoginProfileIncomplete) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -101,11 +112,11 @@ class _RegisterPageState extends State<RegisterPage>{
               ),
             );
           } else if (result is GoogleLoginProfileCompleted) {
-            // TODO: Navegar a la pantalla principal cuando definamos esa ruta.
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Hola te mando al mapa"),
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => const MapPage(),
               ),
+              (route) => false,
             );
           }
         }

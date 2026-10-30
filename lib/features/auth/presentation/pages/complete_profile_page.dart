@@ -14,6 +14,9 @@ import '../blocs/complete_profile/complete_profile_state.dart';
 import 'package:skate_feed/features/auth/presentation/blocs/complete_profile/complete_profile_event.dart';
 import 'package:skate_feed/features/auth/presentation/blocs/complete_profile/complete_profile_bloc.dart';
 
+//PAGES
+import '../../../map/presentation/pages/map_page.dart';
+
 
 class CompleteProfilePage extends StatefulWidget {
   const CompleteProfilePage({super.key});
@@ -42,12 +45,14 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
             ),
           );
          }
+         
          if(state is CompleteProfileSuccess){
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Hola te mando al mapa"),
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (_) => const MapPage(),
               ),
-            );
+             (route) => false,
+          );
          }
         },
       
